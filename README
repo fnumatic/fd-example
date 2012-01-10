@@ -1,0 +1,8 @@
+simple FlowDesign example in scala
+
+http://www.xing.com/net/ebcfd/quelltexte-musterlosungen-best-practices-636557/flowdesign-umsetzung-in-unterschiedlichen-programmiersprachen-39272287/
+
+FlowDesign ressources (german):
+http://clean-code-advisors.com/ressourcen/flow-design-ressourcen
+
+in this example i use reactive-core, a FRP library by Naftoli Gugenheim http://github.com/nafg/reactive
