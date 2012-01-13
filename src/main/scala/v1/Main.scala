@@ -1,4 +1,4 @@
-package main
+package v1
 
 import reactive._
 
@@ -14,7 +14,6 @@ object Main extends App  with Platine[Unit, Unit] {
 
   in.fire()
 
-
   case class Read_netto() extends FuncUnit[Unit, Option[Float]] {
     val out_exit = out.takeWhile(_ != None).map(_.get)
 
@@ -29,6 +28,7 @@ object Main extends App  with Platine[Unit, Unit] {
 
 }
 
+
 case class Calc_mwst() extends Platine[Float, Float] {
 
   val mwst = 0.19F
@@ -42,7 +42,6 @@ case class Calc_mwst() extends Platine[Float, Float] {
   sum_netto.out >> netto_result
   sum_netto.out >> calc_steuer.in
   calc_steuer.out >> calc_brutto.in
-
   calc_brutto.out >> out
 
   case class Sum_float() extends FuncUnit[Float, Float] {
