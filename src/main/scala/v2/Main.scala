@@ -3,12 +3,12 @@ package v2
 import reactive._
 
 object Main extends App with Platine[Unit, Unit] {
-  val readnetto   = Read_netto()
-  val printBrutto = Print_brutto()
-  val calc_mwst   = Calc_mwst()
-  val read_exit   = Read_exit()
+  val read_netto   = Read_netto()
+  val print_brutto = Print_brutto()
+  val calc_tax   = Calc_mwst()
+  val exit_ondemand   = Exit_ondemand()
 
-  this |> readnetto >> read_exit >> calc_mwst >> printBrutto >> readnetto
+  this |> read_netto >> exit_ondemand >> calc_tax >> print_brutto >> read_netto
 
   in.fire()
 
@@ -22,7 +22,7 @@ object Main extends App with Platine[Unit, Unit] {
     def process(f: Float) {println("brutto:  " + f)}
   }
 
-  case class Read_exit() extends Exit[Option[Float], Float](None) {
+  case class Exit_ondemand() extends Exit[Option[Float], Float](None) {
     def process(i: Option[Float]) = i.getOrElse(0F)
   }
 
@@ -31,26 +31,22 @@ object Main extends App with Platine[Unit, Unit] {
 
 case class Calc_mwst() extends Platine[Float, Float] {
 
-  val mwst = 0.19F
+  val taxrate = 0.19F
 
   val sum_netto   = Sum_float()
-  val calc_steuer = Calc_steuer()
-  val calc_brutto = Sum_float2()
-  val netto_sink  = Box(0F)
+  val calc_tax = Calc_steuer()
+  val calc_brutto = Sum_float()
+  val memo_netto  = Box(0F)
 
-  ( this |> sum_netto ) >> netto_sink >> calc_steuer >> calc_brutto >| this
+  ( this |> sum_netto ) >> memo_netto >> calc_tax >> calc_brutto >| this
 
 
   case class Sum_float() extends FuncUnit[Float, Float] {
-    def process(f: Float) = f + netto_sink.value
-  }
-
-  case class Sum_float2() extends FuncUnit[Float, Float] {
-    def process(f: Float) = f + netto_sink.value
+    def process(f: Float) = f + memo_netto.value
   }
 
   case class Calc_steuer() extends FuncUnit[Float, Float] {
-    def process(f: Float) = f * mwst
+    def process(f: Float) = f * taxrate
   }
 
 }
