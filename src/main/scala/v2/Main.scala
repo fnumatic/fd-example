@@ -13,8 +13,6 @@ object Main extends App with Platine[Unit, Unit] {
   in.fire()
 
   case class Read_netto() extends FuncUnit[Unit, Option[Float]] {
-    val out_exit = out.takeWhile(_ != None).map(_.get)
-
     def process(i: Unit) = try Some(readLine("netto: ").toFloat) catch {
       case _ => None
     }
@@ -94,7 +92,7 @@ trait FuncUnit[T, U] extends Fu[T, U] {
 case class Box[T](zero: T) extends Fu[T, T] {
   var v = zero
 
-  in =>> ( v = _)
+  in =>> ( v = _ )
   in =>> out.fire _
 
   def value = v
