@@ -38,7 +38,7 @@ case class Calc_mwst() extends Platine[Float, Float] {
   val sum_netto   = Sum_float()
   val calc_steuer = Calc_steuer()
   val calc_brutto = Sum_float2()
-  val netto_sink  = Sink(0F)
+  val netto_sink  = Box(0F)
 
   ( this |> sum_netto ) >> netto_sink >> calc_steuer >> calc_brutto >| this
 
@@ -91,13 +91,11 @@ trait FuncUnit[T, U] extends Fu[T, U] {
   def process(i: T): U
 }
 
-case class Sink[T](zero: T) extends Fu[T, T] {
+case class Box[T](zero: T) extends Fu[T, T] {
   var v = zero
-  in =>> {
-    ss =>
-      v = ss
-      out.fire(ss)
-  }
+
+  in =>> ( v = _)
+  in =>> out.fire _
 
   def value = v
 }
