@@ -10,7 +10,7 @@ object Main extends App with Platine[Unit, Unit] {
   val calc_tax      = Calc_mwst()
   val exit_ondemand = toex(Exit_ondemand, Option.empty[Float])
 
-  this |> read_netto >> exit_ondemand >> calc_tax >> print_brutto >> read_netto
+  this #> read_netto >> exit_ondemand >> calc_tax >> print_brutto >> read_netto
 
   execute()
 
@@ -33,7 +33,7 @@ case class Calc_mwst() extends Platine[Float, Float] {
   val calc_brutto = tofu(Sum_float)
   val memo_netto  = Box(0F)
 
-  ( this |> sum_netto ) >> memo_netto >> calc_tax >> calc_brutto >| this
+  this #> sum_netto >> memo_netto >> calc_tax >> calc_brutto ># this
 
   def Sum_float(f: Float) = f + memo_netto.value
 
@@ -53,7 +53,7 @@ trait Fu[T, U] extends Observing {
   /**
    * out to out
    */
-  def >|[S](target: Fu[S, U]) = {
+  def >#[S](target: Fu[S, U]) = {
     out.foreach(target.out.fire _)
     target
   }
@@ -61,7 +61,7 @@ trait Fu[T, U] extends Observing {
   /**
    * in to in
    */
-  def |>[Z](target: Fu[T, Z]) = {
+  def #>[Z](target: Fu[T, Z]) = {
     in.foreach(target.in.fire _)
     target
   }
