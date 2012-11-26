@@ -110,6 +110,13 @@ trait InOut2[T,U] extends Fu[T,U] with In[T] with Out[U]
 
 trait Board[T, U] extends InOut2[T,U]
 
+trait AppFlow[T,U] extends Board[T,U]{
+  val start = new FuncUnit[T,Unit] {def process(t:T) = startup(t)}
+  val exit =new FuncUnit[U,Unit] {def process(u:U) = shutdown(u)}
+  def startup(t:T)={}
+  def shutdown(u:U)={}
+}
+
 trait Processing[T,U]{
   def process(i:  T): U
 }

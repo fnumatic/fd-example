@@ -22,8 +22,6 @@ object FuConvert {
    def get[T]()=fu({ o:Option[T] => o.getOrElse(null.asInstanceOf[T]) })
    def get2[T](implicit dbgname:String="")=fu{ t:T => t }
 
-
-
   implicit def rich2[T, R](f: T => R): FuConvert[T, R] = new FuConvert[T, R](f)
 
 }
